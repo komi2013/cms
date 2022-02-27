@@ -66,7 +66,6 @@ func Category(w http.ResponseWriter, r *http.Request) {
 	}
 	treeList := map[int]map[string]string{}
 
-	// MCategoryTree is table
 	type MCategoryTree struct {
 		LeafID    int       // leaf_id
 		Level1    int       // level_1
@@ -179,7 +178,6 @@ func Category(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Print(err)
 	}
-	// MCategoryName is table
 	type MCategoryName struct {
 		CategoryID          int       // category_id
 		CategoryName        string    // category_name

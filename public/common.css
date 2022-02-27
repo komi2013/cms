@@ -1,0 +1,46 @@
+a {
+  text-decoration: none;
+}
+body {
+  margin: 0 auto;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+    text-align: center;
+}
+.icon {
+  max-height: 48px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+#header td {
+  width: 20%;
+  text-align: center;
+  background-color: #EEEEEE;
+}
+#drawer td {
+  background-color: #EEEEEE;
+  height: 50px;
+}
+#drawer td a {
+  display: block;
+  width: 100%;
+}
+
+.another_page {
+  text-align: center;
+  background-color: #EEEEEE;  
+}
+.this_page {
+  text-align: center;
+  background-color: #FCFCFC;
+  border-color: silver;
+}
+.div_t {
+  border-bottom: 1px solid #F5F5F5;
+  padding: 20px 10px 19px 10px;    
+}
+.str_cp {
+  pointer-events: none;
+}
