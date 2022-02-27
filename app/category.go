@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"../common"
 	_ "github.com/lib/pq" // this driver for postgres
@@ -27,17 +28,18 @@ func Category(w http.ResponseWriter, r *http.Request) {
 		CategoryID   int
 		CategoryName string
 	}
-	type CategoryQuestion struct {
-		QuestionID    string
-		QuestionTitle string
+	type Note struct {
+		NoteID        int
+		UpdatedAt     time.Time
+		NoteTitle     string
+		NoteTxt       string
 	}
 	type CategoryList struct {
 		Level            string
 		CategoryID       int
 		CategoryName     string
-		CategoryQuestion []CategoryQuestion
+		// Note             []Note
 	}
-
 	type View struct {
 		CacheV              string
 		CSRF                string
@@ -46,7 +48,7 @@ func Category(w http.ResponseWriter, r *http.Request) {
 		CategoryName        string
 		CategoryDescription string
 		CategoryTxt         template.HTML
-		CategoryQuestion    []CategoryQuestion
+		Note                []Note
 	}
 	var view View
 	view.CacheV = common.CacheV
@@ -63,7 +65,22 @@ func Category(w http.ResponseWriter, r *http.Request) {
 		log.Print(err)
 	}
 	treeList := map[int]map[string]string{}
-	d := common.MCategoryTree{}
+
+	// MCategoryTree is table
+	type MCategoryTree struct {
+		LeafID    int       // leaf_id
+		Level1    int       // level_1
+		Level2    int       // level_2
+		Level3    int       // level_3
+		Level4    int       // level_4
+		Level5    int       // level_5
+		Level6    int       // level_6
+		Level7    int       // level_7
+		Level8    int       // level_8
+		UpdatedAt time.Time // updated_at
+	}
+	leaf := false
+	d := MCategoryTree{}
 	for rows.Next() {
 		if err := rows.Scan(&d.LeafID, &d.Level1, &d.Level2, &d.Level3, &d.Level4, &d.Level5, &d.Level6, &d.Level7, &d.Level8, &d.UpdatedAt); err != nil {
 			log.Print(err)
@@ -90,6 +107,9 @@ func Category(w http.ResponseWriter, r *http.Request) {
 			list["level"] = "6"
 			list["category_name"] = ""
 			treeList[d.Level6] = list
+		}
+		if strconv.Itoa(d.LeafID) == u[3] {
+			leaf = true
 		}
 	}
 	delete(treeList, 0)
@@ -159,8 +179,15 @@ func Category(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Print(err)
 	}
+	// MCategoryName is table
+	type MCategoryName struct {
+		CategoryID          int       // category_id
+		CategoryName        string    // category_name
+		UpdatedAt           time.Time // updated_at
+		CategoryDescription string    // category_description
+	}
 	for rows.Next() {
-		r := common.MCategoryName{}
+		r := MCategoryName{}
 		if err := rows.Scan(&r.CategoryID, &r.CategoryName, &r.CategoryDescription); err != nil {
 			log.Print(err)
 		}
@@ -187,18 +214,6 @@ func Category(w http.ResponseWriter, r *http.Request) {
 	}
 	sort.Slice(breadCrumb, func(i, j int) bool { return breadCrumb[i].Level < breadCrumb[j].Level }) // DESC
 	view.BreadCrumb = breadCrumb
-	var categoryQuestionPre []common.MCategoryQuestion
-	rows, err = db.Query("SELECT question_id, category_id, question_title, in_list FROM m_category_question WHERE category_id in (" + whereIn2 + ")")
-	if err != nil {
-		log.Print(err)
-	}
-	for rows.Next() {
-		r := common.MCategoryQuestion{}
-		if err := rows.Scan(&r.QuestionID, &r.CategoryID, &r.QuestionTitle, &r.InList); err != nil {
-			log.Print(err)
-		}
-		categoryQuestionPre = append(categoryQuestionPre, r)
-	}
 
 	var categoryList []CategoryList
 	for i, v := range treeList {
@@ -206,29 +221,51 @@ func Category(w http.ResponseWriter, r *http.Request) {
 		y.Level = v["level"]
 		y.CategoryID = i
 		y.CategoryName = v["category_name"]
-		var categoryQuestion []CategoryQuestion
-		for _, v2 := range categoryQuestionPre {
-			if y.CategoryID == v2.CategoryID && v2.InList == 1 {
-				y2 := CategoryQuestion{}
-				y2.QuestionID = strconv.Itoa(v2.QuestionID)
-				y2.QuestionTitle = v2.QuestionTitle
-				categoryQuestion = append(categoryQuestion, y2)
-			}
-		}
-		y.CategoryQuestion = categoryQuestion
+		// var notes []Note
+		// for _, v2 := range notePre {
+		// 	if y.CategoryID == v2.CategoryID && v2.InList == 1 {
+		// 		y2 := notes{}
+		// 		y2.QuestionID = strconv.Itoa(v2.QuestionID)
+		// 		y2.QuestionTitle = v2.QuestionTitle
+		// 		notes = append(notes, y2)
+		// 	}
+		// }
+		// y.notes = notes
 		categoryList = append(categoryList, y)
 	}
-	var categoryQuestion []CategoryQuestion
-	for _, v2 := range categoryQuestionPre {
-		if strconv.Itoa(v2.CategoryID) == u[3] && v2.InList == 0 {
-			y2 := CategoryQuestion{}
-			y2.QuestionID = strconv.Itoa(v2.QuestionID)
-			y2.QuestionTitle = v2.QuestionTitle
-			categoryQuestion = append(categoryQuestion, y2)
-		}
+
+	// var notePre []Note
+	if leaf {
+		rows, err = db.Query(`SELECT note_id, note_title, note_txt, updated_at 
+			FROM t_note WHERE category_id = ` + u[3] + `ORDER BY note_id DESC`)
+	} else {
+		rows, err = db.Query(`SELECT note_id, note_title, note_txt, updated_at
+			FROM t_note WHERE list_category_id = ` + u[3] + `ORDER BY note_id DESC`)
 	}
-	view.CategoryQuestion = categoryQuestion
+
+	if err != nil {
+		log.Print(err)
+	}
+	var notes []Note
+	for rows.Next() {
+		r := Note{}
+		if err := rows.Scan(&r.NoteID, &r.NoteTitle, &r.NoteTxt, &r.UpdatedAt); err != nil {
+			log.Print(err)
+		}
+		notes = append(notes, r)
+	}
+
+	// var notes []Note
+	// for _, v2 := range notePre {
+	// 	if strconv.Itoa(v2.CategoryID) == u[3] && v2.InList == 0 {
+	// 		y2 := Note{}
+	// 		y2.QuestionID = strconv.Itoa(v2.QuestionID)
+	// 		y2.QuestionTitle = v2.QuestionTitle
+	// 		notes = append(notes, y2)
+	// 	}
+	// }
+	view.Note = notes
 	view.CategoryList = categoryList
-	tpl := template.Must(template.ParseFiles("html/category.html"))
+	tpl := template.Must(template.ParseFiles("tpl/category.html"))
 	tpl.Execute(w, view)
 }

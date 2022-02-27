@@ -10,8 +10,8 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/htm/", app.Htm)
-	http.HandleFunc("/", app.Top)
+	// http.HandleFunc("/htm/", app.Htm)
+	http.HandleFunc("/category/", app.Category)
 	fmt.Println("starting.." + common.CacheV)
 	fmt.Println(common.DbConnect)
 
