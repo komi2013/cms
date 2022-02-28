@@ -2,6 +2,7 @@ package app
 
 import (
 	"database/sql"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -30,7 +31,7 @@ func Category(w http.ResponseWriter, r *http.Request) {
 	}
 	type Note struct {
 		NoteID        int
-		UpdatedAt     time.Time
+		UpdatedAt     string
 		NoteTitle     string
 		NoteTxt       string
 	}
@@ -112,7 +113,6 @@ func Category(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	delete(treeList, 0)
-	// fmt.Printf("treeList %#v\n", treeList)
 	whereIn := u[3]
 	forBreadCrumb := map[int]map[string]string{}
 	list := map[string]string{}
@@ -219,20 +219,8 @@ func Category(w http.ResponseWriter, r *http.Request) {
 		y.Level = v["level"]
 		y.CategoryID = i
 		y.CategoryName = v["category_name"]
-		// var notes []Note
-		// for _, v2 := range notePre {
-		// 	if y.CategoryID == v2.CategoryID && v2.InList == 1 {
-		// 		y2 := notes{}
-		// 		y2.QuestionID = strconv.Itoa(v2.QuestionID)
-		// 		y2.QuestionTitle = v2.QuestionTitle
-		// 		notes = append(notes, y2)
-		// 	}
-		// }
-		// y.notes = notes
 		categoryList = append(categoryList, y)
 	}
-
-	// var notePre []Note
 	if leaf {
 		rows, err = db.Query(`SELECT note_id, note_title, note_txt, updated_at 
 			FROM t_note WHERE category_id = ` + u[3] + `ORDER BY note_id DESC`)
@@ -246,22 +234,16 @@ func Category(w http.ResponseWriter, r *http.Request) {
 	}
 	var notes []Note
 	for rows.Next() {
+		var ti time.Time
 		r := Note{}
-		if err := rows.Scan(&r.NoteID, &r.NoteTitle, &r.NoteTxt, &r.UpdatedAt); err != nil {
+		if err := rows.Scan(&r.NoteID, &r.NoteTitle, &r.NoteTxt, &ti); err != nil {
 			log.Print(err)
 		}
+		fmt.Printf("r.UpdatedAt %#v\n", ti.Format("2006年1月2日"))
+		r.UpdatedAt = ti.Format("2006年1月2日")
 		notes = append(notes, r)
 	}
-
-	// var notes []Note
-	// for _, v2 := range notePre {
-	// 	if strconv.Itoa(v2.CategoryID) == u[3] && v2.InList == 0 {
-	// 		y2 := Note{}
-	// 		y2.QuestionID = strconv.Itoa(v2.QuestionID)
-	// 		y2.QuestionTitle = v2.QuestionTitle
-	// 		notes = append(notes, y2)
-	// 	}
-	// }
+	
 	view.Note = notes
 	view.CategoryList = categoryList
 	tpl := template.Must(template.ParseFiles("tpl/category.html"))

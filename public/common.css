@@ -44,3 +44,57 @@ table {
 .str_cp {
   pointer-events: none;
 }
+
+@media screen and (min-width : 711px) { 
+  body {
+    width: 960px;
+  }
+  #content{
+    margin: 0px 0px 0px 310px;
+    width: 480px;
+    float:left;
+  }
+  #menu_td{
+    width: 300px;
+  }
+  #menu_td img{
+    display: none;
+  }
+  #drawer {
+    position : absolute;
+    float : left;
+    margin-top : -1px;
+    width : 300px;   
+    background-color: white;
+  }
+
+  .pc_disp_none{
+    display: none;
+  }
+  #ad_right{
+    position:absolute;
+    left:1000px;
+    top:50px;
+  }
+}
+
+@media screen and (max-width : 710px) { 
+  #drawer {
+    width: 80%;
+    overflow: scroll;
+    position: absolute;
+    z-index: 10;
+    margin: 0;
+    background-color: white;
+    left: -100%;
+    top : 51px;
+    float: left;
+  }
+  .sp_disp_none{
+    display: none;
+  }
+  #menu_td{
+    width: 25%;
+  }
+
+}

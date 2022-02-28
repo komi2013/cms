@@ -1,61 +1,32 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8" />
     <title>{{.CategoryName}}</title>
     <meta name="description" content="{{.CategoryDescription}}">
+    <meta property="og:image" content="https://" />
+    <link rel="stylesheet" href="/common.css{{.CacheV}}" />
     <link rel="shortcut icon" href="/favicon.ico">
-    <meta property="og:image" content="/favicon.ico" />
     <script src="/plugin/min.js"></script>
-    <link rel="stylesheet" href="/css/common.css{{.CacheV}}" />
-    <link rel="stylesheet" href="/css/pc.css{{.CacheV}}" media="only screen and (min-width : 711px)">
-    <link rel="stylesheet" href="/css/sp.css{{.CacheV}}" media="only screen and (max-width : 710px)">
     <meta name="viewport" content="width=device-width, user-scalable=no" >
   </head>
-<style>
-.question {
-  width: 99%;
-  padding: 20px 0px 19px 0px;
-  word-break: break-word;
-  border-bottom: 1px solid #F5F5F5;
-}
-.question a {
-  display: block;
-  width: 100%;
-}
-.categoryName {
-  background-color: #F5F5F5;
-  width: 99%;
-  text-align: center;
-  padding: 10px;
-}
-.categoryName a {
-  display: block;
-  width: 100%;
-}
-</style>
 <body>
 <table id="header">
   <tr>
   <td id="menu_td">
-    <img src="/img/icon/menu.png" class="icon">
+    <img src="/img/menu.png" class="icon">
   </td>
-  <td>
-    <a href="/message/"><img src="/img/icon/mail.png" class="icon"></a>
-  </td>
+  <td style="width: 80%;"><h2>{{.CategoryName}}</h2></td>
   </tr>
 </table>
 <table id="drawer">
   <tr><td id="ad_menu"><iframe src="/advertisement/ad_300_250/" width="300" height="250" frameborder="0" scrolling="no"></iframe></td></tr>
-  <tr><td><a href="/" ><img src="/img/icon/home.png" class="icon"></a></td></tr>
+  <tr><td><a href="/" ><img src="/img/home.png" class="icon"></a></td></tr>
 
 {{ range $v := .CategoryList }}
 <tr><td class="categoryName">
   <a href="/category/{{$v.Level}}/{{$v.CategoryID}}/"> {{$v.CategoryName}} </a>
 </td></tr>
 {{end}}
-
-  <tr><td><a href="/htm/rule/"><img src="/img/icon/audit.png" class="icon"></a></td></tr>
 </table>
 
 <div id="content">
@@ -68,12 +39,14 @@
 {{end}}
 </div>
 
-<h3>{{.CategoryName}}</h3>
 <div>{{.CategoryTxt}}</div>
 
-{{ range $v2 := .NewNotes }}
-<div class="question">
-  <a href="/quiz/?q={{ $v2.QuestionID }}"> {{ $v2.QuestionTitle }} </a>
+<!-- &r.NoteID, &r.NoteTitle, &r.NoteTxt, &r.UpdatedAt -->
+
+{{ range $v := .Note }}
+<div class="note">
+  <p><a href="/note/{{ $v.NoteID }}/"> {{ $v.NoteTitle }} </a></p>
+  {{ $v.NoteTxt }}  {{ $v.UpdatedAt }}
 </div>
 {{end}}
 
@@ -81,14 +54,7 @@
 <br>
 <div id="ad_right"><iframe src="/advertisement/ad_160_600/" width="160" height="600" frameborder="0" scrolling="no"></iframe></div>
 
-<script src="/js/common.js{{.CacheV}}"></script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-57298122-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'UA-57298122-1');
-</script>
+
 
 </body>
 </html>
