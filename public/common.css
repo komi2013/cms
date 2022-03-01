@@ -14,11 +14,7 @@ table {
   vertical-align: middle;
   cursor: pointer;
 }
-#header td {
-  width: 20%;
-  text-align: center;
-  background-color: #EEEEEE;
-}
+
 #drawer td {
   background-color: #EEEEEE;
   height: 50px;
@@ -50,12 +46,9 @@ table {
     width: 960px;
   }
   #content{
-    margin: 0px 0px 0px 310px;
-    width: 480px;
+    margin: 0px 4px 0px 310px;
+    width: 476px;
     float:left;
-  }
-  #menu_td{
-    width: 300px;
   }
   #menu_td img{
     display: none;
@@ -67,14 +60,11 @@ table {
     width : 300px;   
     background-color: white;
   }
-
   .pc_disp_none{
     display: none;
   }
   #ad_right{
-    position:absolute;
-    left:1000px;
-    top:50px;
+    margin:2px;
   }
 }
 
@@ -90,11 +80,23 @@ table {
     top : 51px;
     float: left;
   }
+  #pulling {
+    position: absolute;
+    top: 0px;
+    height: 46px;
+    width: 46px;
+    opacity: 0;
+  }
+  #pulling:checked ~ #drawer{
+    left: 0%;
+  }
+  #header{
+    width: 100%;
+    text-align: left;
+    background-color: #EEEEEE;
+  }
   .sp_disp_none{
     display: none;
-  }
-  #menu_td{
-    width: 25%;
   }
 
 }

@@ -2,7 +2,7 @@ package app
 
 import (
 	"database/sql"
-	"fmt"
+	// "fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -32,7 +32,7 @@ func Note(w http.ResponseWriter, r *http.Request) {
 		NoteID        int
 		UpdatedAt     time.Time
 		NoteTitle     string
-		NoteTxt       string
+		NoteTxt       template.HTML
 		CategoryID    string
 		NoteImg       string
 	}
@@ -69,7 +69,7 @@ func Note(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("note %#v\n", note)
+	// fmt.Printf("note %#v\n", note)
 	view.Note = note
 	type MCategoryTree struct {
 		LeafID    int       // leaf_id
@@ -179,24 +179,11 @@ func Note(w http.ResponseWriter, r *http.Request) {
 		}
 
 		sort.Slice(breadCrumb, func(i, j int) bool { return breadCrumb[i].Level < breadCrumb[j].Level }) // DESC
-		fmt.Printf("breadCrumb %#v\n", breadCrumb)
+		// fmt.Printf("breadCrumb %#v\n", breadCrumb)
 		view.BreadCrumb = breadCrumb
 	}
 
 	tpl := template.Must(template.ParseFiles("tpl/note.html"))
 	tpl.Execute(w, view)
 
-	// var categoryList []CategoryList
-	// for i, v := range treeList {
-	// 	y := CategoryList{}
-	// 	y.Level = v["level"]
-	// 	y.CategoryID = i
-	// 	y.CategoryName = v["category_name"]
-	// 	categoryList = append(categoryList, y)
-	// }
-
-	// view.Note = notes
-	// view.CategoryList = categoryList
-	// tpl := template.Must(template.ParseFiles("tpl/category.html"))
-	// tpl.Execute(w, view)
 }

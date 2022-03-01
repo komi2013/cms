@@ -3,9 +3,6 @@ package app
 import (
 	"html/template"
 	"net/http"
-
-	"../common"
-
 	// "fmt"
 	"strings"
 )
@@ -16,10 +13,7 @@ func Advertisement(w http.ResponseWriter, r *http.Request) {
 	arr := strings.Split(r.URL.String(), "/")
 	// fmt.Printf("ary2: %v\n", arr[2])
 	tpl := template.Must(template.ParseFiles("tpl/advertisement/" + arr[2] + ".html"))
-	uID := common.GetUser(w, r)
-	if uID == 0 {
-		return
-	}
+
 	m := map[string]string{
 		"Date": "Date",
 	}
