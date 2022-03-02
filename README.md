@@ -10,4 +10,4 @@ I don't want to make GOPATH as long as I can :)
 
 /usr/local/go/bin/go get -u github.com/catinello/base62
 /usr/local/go/bin/go get -u github.com/lib/pq
-
+/usr/local/go/bin/go get github.com/grokify/html-strip-tags-go

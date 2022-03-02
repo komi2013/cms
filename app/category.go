@@ -2,7 +2,7 @@ package app
 
 import (
 	"database/sql"
-	"fmt"
+	// "fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -13,6 +13,8 @@ import (
 
 	"../common"
 	_ "github.com/lib/pq" // this driver for postgres
+
+	"github.com/grokify/html-strip-tags-go"
 )
 
 // Category category page list question
@@ -63,7 +65,7 @@ func Category(w http.ResponseWriter, r *http.Request) {
 	}
 	rows, err := db.Query("SELECT * FROM m_category_tree WHERE level_"+u[2]+" = $1", u[3])
 	if err != nil {
-		log.Print(err)
+		log.Print(err) // it is sanitized 
 	}
 	treeList := map[int]map[string]string{}
 
@@ -169,12 +171,18 @@ func Category(w http.ResponseWriter, r *http.Request) {
 		list["category_name"] = ""
 		forBreadCrumb[d.Level8] = list
 	}
-	whereIn2 := u[3]
-
+	whereIn2 := u[3] // it is sanitized 
 	for i := range treeList {
 		whereIn2 = whereIn2 + "," + strconv.Itoa(i)
 	}
-	rows, err = db.Query("SELECT category_id, category_name, category_description FROM m_category_name WHERE category_id in (" + whereIn + "," + whereIn2 + ")")
+	if leaf {
+		// fmt.Printf("whereLevel1 %#v\n", whereLevel1)
+		rows, err = db.Query(`SELECT category_id, category_name, category_description FROM m_category_name WHERE category_id = ` +
+			u[3] + ` OR category_id in ( SELECT level_1 FROM m_category_tree GROUP BY level_1 )`)
+	} else {
+		rows, err = db.Query("SELECT category_id, category_name, category_description FROM m_category_name WHERE category_id in (" + whereIn + "," + whereIn2 + ")")
+	}
+
 	if err != nil {
 		log.Print(err)
 	}
@@ -184,6 +192,7 @@ func Category(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt           time.Time // updated_at
 		CategoryDescription string    // category_description
 	}
+	var categoryList []CategoryList
 	for rows.Next() {
 		r := MCategoryName{}
 		if err := rows.Scan(&r.CategoryID, &r.CategoryName, &r.CategoryDescription); err != nil {
@@ -199,6 +208,12 @@ func Category(w http.ResponseWriter, r *http.Request) {
 			view.CategoryName = r.CategoryName
 			view.CategoryDescription = r.CategoryDescription
 			view.CategoryTxt = template.HTML(strings.Replace(r.CategoryDescription, "\n", "<br>", -1))
+		} else if leaf {
+			y := CategoryList{}
+			y.Level = "1"
+			y.CategoryID = r.CategoryID
+			y.CategoryName = r.CategoryName
+			categoryList = append(categoryList, y)
 		}
 	}
 
@@ -213,14 +228,17 @@ func Category(w http.ResponseWriter, r *http.Request) {
 	sort.Slice(breadCrumb, func(i, j int) bool { return breadCrumb[i].Level < breadCrumb[j].Level }) // DESC
 	view.BreadCrumb = breadCrumb
 
-	var categoryList []CategoryList
-	for i, v := range treeList {
-		y := CategoryList{}
-		y.Level = v["level"]
-		y.CategoryID = i
-		y.CategoryName = v["category_name"]
-		categoryList = append(categoryList, y)
+	
+	if !(leaf) {
+		for i, v := range treeList {
+			y := CategoryList{}
+			y.Level = v["level"]
+			y.CategoryID = i
+			y.CategoryName = v["category_name"]
+			categoryList = append(categoryList, y)
+		}
 	}
+
 	if leaf {
 		rows, err = db.Query(`SELECT note_id, note_title, note_txt, updated_at 
 			FROM t_note WHERE category_id = ` + u[3] + `ORDER BY note_id DESC`)
@@ -235,12 +253,13 @@ func Category(w http.ResponseWriter, r *http.Request) {
 	var notes []Note
 	for rows.Next() {
 		var ti time.Time
+		var txt string
 		r := Note{}
-		if err := rows.Scan(&r.NoteID, &r.NoteTitle, &r.NoteTxt, &ti); err != nil {
+		if err := rows.Scan(&r.NoteID, &r.NoteTitle, &txt, &ti); err != nil {
 			log.Print(err)
 		}
-		fmt.Printf("r.UpdatedAt %#v\n", ti.Format("2006年1月2日"))
 		r.UpdatedAt = ti.Format("2006年1月2日")
+		r.NoteTxt = strip.StripTags(txt)[1:256]
 		notes = append(notes, r)
 	}
 	

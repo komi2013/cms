@@ -14,6 +14,7 @@ func main() {
 	http.HandleFunc("/advertisement/", app.Advertisement)
 	http.HandleFunc("/category/", app.Category)
 	http.HandleFunc("/note/", app.Note)
+	http.HandleFunc("/", app.Top)
 	fmt.Println("starting.." + common.CacheV)
 	fmt.Println(common.DbConnect)
 
