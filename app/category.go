@@ -176,7 +176,6 @@ func Category(w http.ResponseWriter, r *http.Request) {
 		whereIn2 = whereIn2 + "," + strconv.Itoa(i)
 	}
 	if leaf {
-		// fmt.Printf("whereLevel1 %#v\n", whereLevel1)
 		rows, err = db.Query(`SELECT category_id, category_name, category_description FROM m_category_name WHERE category_id = ` +
 			u[3] + ` OR category_id in ( SELECT level_1 FROM m_category_tree GROUP BY level_1 )`)
 	} else {
@@ -228,8 +227,9 @@ func Category(w http.ResponseWriter, r *http.Request) {
 	sort.Slice(breadCrumb, func(i, j int) bool { return breadCrumb[i].Level < breadCrumb[j].Level }) // DESC
 	view.BreadCrumb = breadCrumb
 
-	
 	if !(leaf) {
+
+		// var categoryList []CategoryList
 		for i, v := range treeList {
 			y := CategoryList{}
 			y.Level = v["level"]
@@ -238,7 +238,7 @@ func Category(w http.ResponseWriter, r *http.Request) {
 			categoryList = append(categoryList, y)
 		}
 	}
-
+// fmt.Printf("categoryList %#v\n", categoryList)
 	if leaf {
 		rows, err = db.Query(`SELECT note_id, note_title, note_txt, updated_at 
 			FROM t_note WHERE category_id = ` + u[3] + `ORDER BY note_id DESC`)

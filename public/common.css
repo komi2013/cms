@@ -14,7 +14,9 @@ table {
   vertical-align: middle;
   cursor: pointer;
 }
-
+#content {
+  padding: 2px;
+}
 #drawer td {
   background-color: #EEEEEE;
   height: 50px;

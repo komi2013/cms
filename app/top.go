@@ -66,7 +66,7 @@ func Top(w http.ResponseWriter, r *http.Request) {
 			log.Print(err)
 		}
 		list := map[string]string{}
-		list["level"] = "2"
+		list["level"] = "1"
 		list["category_name"] = ""
 		treeList[level_1] = list
 		whereIn = whereIn + "," + strconv.Itoa(level_1)
