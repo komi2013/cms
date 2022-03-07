@@ -5,7 +5,6 @@
     <meta property="og:image" content="https://{{.Note.NoteImg}}" />
     <link rel="stylesheet" href="/common.css{{.CacheV}}" />
     <link rel="shortcut icon" href="/favicon.ico">
-    <script src="/plugin/min.js"></script>
     <meta name="viewport" content="width=device-width, user-scalable=no" >
   </head>
 <body>
@@ -14,20 +13,22 @@
 </table>
 <input type="checkbox" id="pulling" class="pc_disp_none">
 <table id="drawer">
-<!--   <tr><td id="ad_menu"><iframe src="/advertisement/ad_300_250/" width="300" height="250" frameborder="0" scrolling="no"></iframe></td></tr> -->
+  <tr><td id="ad_menu"><iframe src="/advertisement/ad_300_250/" width="300" height="250" frameborder="0" scrolling="no"></iframe></td></tr>
   <tr><td><a href="/"><img src="/img/home.png" class="icon"></a></td></tr>
-  <tr><td><a href="/">Javascript</a></td></tr>
-  <tr><td><a href="/">Javascript</a></td></tr>
-  <tr><td><a href="/">Javascript</a></td></tr>
+{{ range $v := .CategoryList }}
+<tr><td class="categoryName">
+  <a href="/category/{{$v.Level}}/{{$v.CategoryID}}/"> {{$v.CategoryName}} </a>
+</td></tr>
+{{end}}
 </table>
 
 <div id="content">
 
-<!-- 
+
 <div class="pc_disp_none" style="text-align: center;">
   <iframe src="/advertisement/ad_320_50/" width="320" height="50" frameborder="0" scrolling="no"></iframe>
 </div>
- -->
+
 
 <h1>{{.Note.NoteTitle}}</h1>
 
@@ -42,9 +43,9 @@
 
 </div  beginis content>
 <br>
-<!-- 
+
 <div id="ad_right"><iframe src="/advertisement/ad_160_600/" width="160" height="600" frameborder="0" scrolling="no"></iframe></div>
- -->
+
 
 
 </body>

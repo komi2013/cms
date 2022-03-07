@@ -2,11 +2,10 @@ package app
 
 import (
 	"database/sql"
-	// "fmt"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 
 	"../common"
@@ -54,53 +53,23 @@ func Top(w http.ResponseWriter, r *http.Request) {
 	view.CacheV = common.CacheV
 	view.CSRF = ""
 
-	rows, err := db.Query("SELECT level_1 FROM m_category_tree GROUP BY level_1")
+	rows, err := db.Query(`SELECT category_id, category_name FROM m_category_name WHERE category_id in 
+		(SELECT level_1 FROM m_category_tree GROUP BY level_1)`)
 	if err != nil {
 		log.Print(err)
 	}
-	treeList := map[int]map[string]string{}
-	whereIn := "0"
-	for rows.Next() {
-		level_1 := 0
-		if err := rows.Scan(&level_1); err != nil {
-			log.Print(err)
-		}
-		list := map[string]string{}
-		list["level"] = "1"
-		list["category_name"] = ""
-		treeList[level_1] = list
-		whereIn = whereIn + "," + strconv.Itoa(level_1)
-	}
-	delete(treeList, 0)
-
-	rows, err = db.Query("SELECT category_id, category_name FROM m_category_name WHERE category_id in (" + whereIn + ")")
-	if err != nil {
-		log.Print(err)
-	}
-	type MCategoryName struct {
-		CategoryID          int       // category_id
-		CategoryName        string    // category_name
-	}
-	for rows.Next() {
-		r := MCategoryName{}
-		if err := rows.Scan(&r.CategoryID, &r.CategoryName); err != nil {
-			log.Print(err)
-		}
-		if _, ok := treeList[r.CategoryID]; ok {
-			treeList[r.CategoryID]["category_name"] = r.CategoryName
-		}
-	}
-
 	var categoryList []CategoryList
-	for i, v := range treeList {
+	for rows.Next() {
 		y := CategoryList{}
-		y.Level = v["level"]
-		y.CategoryID = i
-		y.CategoryName = v["category_name"]
+		if err := rows.Scan(&y.CategoryID, &y.CategoryName); err != nil {
+			log.Print(err)
+		}
+		y.Level = "1"
 		categoryList = append(categoryList, y)
 	}
+
 	rows, err = db.Query(`SELECT note_id, note_title, note_txt, updated_at
-			FROM t_note WHERE list_category_id = 0 ORDER BY note_id DESC`)
+			FROM t_note ORDER BY note_id DESC LIMIT 8`)
 	if err != nil {
 		log.Print(err)
 	}
@@ -114,12 +83,12 @@ func Top(w http.ResponseWriter, r *http.Request) {
 		}
 		// fmt.Printf("r.UpdatedAt %#v\n", ti.Format("2006年1月2日"))
 		r.UpdatedAt = ti.Format("2006年1月2日")
-		r.NoteTxt = strip.StripTags(txt)[1:256]
+		r.NoteTxt = strip.StripTags(txt)[0:240]
 		notes = append(notes, r)
 	}
-	view.CategoryName = "炎上案件上等CTO"
-	view.CategoryDescription = "炎上案件上等CTOのブログ　システムの問い合わせの受付やシステム設計の思想・ベストプラクティス　完全に無料で使えるツールの紹介もしています"
-	view.CategoryTxt = template.HTML("炎上案件上等CTOのブログ<br>システムの問い合わせの受付やシステム設計の思想・ベストプラクティス<br>完全に無料で使えるツールの紹介もしています")
+	view.CategoryName = "コスト削減できる社外CTO"
+	view.CategoryDescription = "破産寸前の会社を過去最高利益の黒字まで押し上げた実績のあるCTOのブログ　システムの問い合わせの受付やシステム設計の思想・ベストプラクティス　完全に無料で使えるツールの紹介もしています"
+	view.CategoryTxt = template.HTML("破産寸前の会社を過去最高利益の黒字まで押し上げた実績のあるCTOのブログ<br>システムの問い合わせの受付やシステム設計の思想・ベストプラクティス<br>完全に無料で使えるツールの紹介もしています")
 
 	view.Note = notes
 	view.CategoryList = categoryList

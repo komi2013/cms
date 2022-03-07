@@ -182,7 +182,21 @@ func Note(w http.ResponseWriter, r *http.Request) {
 		// fmt.Printf("breadCrumb %#v\n", breadCrumb)
 		view.BreadCrumb = breadCrumb
 	}
-
+	rows, err = db.Query(`SELECT category_id, category_name FROM m_category_name WHERE category_id in 
+		(SELECT level_1 FROM m_category_tree GROUP BY level_1)`)
+	if err != nil {
+		log.Print(err)
+	}
+	var categoryList []CategoryList
+	for rows.Next() {
+		y := CategoryList{}
+		if err := rows.Scan(&y.CategoryID, &y.CategoryName); err != nil {
+			log.Print(err)
+		}
+		y.Level = "1"
+		categoryList = append(categoryList, y)
+	}
+	view.CategoryList = categoryList
 	tpl := template.Must(template.ParseFiles("tpl/note.html"))
 	tpl.Execute(w, view)
 

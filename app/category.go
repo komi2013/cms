@@ -259,7 +259,7 @@ func Category(w http.ResponseWriter, r *http.Request) {
 			log.Print(err)
 		}
 		r.UpdatedAt = ti.Format("2006年1月2日")
-		r.NoteTxt = strip.StripTags(txt)[1:256]
+		r.NoteTxt = strip.StripTags(txt)[0:256]
 		notes = append(notes, r)
 	}
 	

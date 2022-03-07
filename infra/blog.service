@@ -1,0 +1,16 @@
+[Unit]
+Description=path is /etc/systemd/system/blog.service
+#comment out is ok like this?
+
+[Service]
+#ExecStartPre=/bin/sh -c "/bin/systemctl set-environment VAR=$(date)"
+ExecStart=/var/www/blog/blog
+WorkingDirectory=/var/www/blog
+Restart=no
+Type=simple
+User=ubuntu
+StandardOutput=file:/var/www/blog/log/go.log
+StandardError=file:/var/www/blog/log/error.log
+
+[Install]
+WantedBy=multi-user.target

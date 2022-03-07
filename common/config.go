@@ -1,10 +1,10 @@
 package common
 
 // GoPort is for web server port
-const GoPort = ":8100"
+const GoPort = ":8001"
 
 // CacheV is for broswer cache
-const CacheV = "?dev20220303-2"
+const CacheV = "?dev20220306"
 
 // SsKey ss session
 const SsKey = "11111111111111111111111111111111"
