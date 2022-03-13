@@ -86,7 +86,7 @@ func Top(w http.ResponseWriter, r *http.Request) {
 		r.NoteTxt = strip.StripTags(txt)[0:240]
 		notes = append(notes, r)
 	}
-	view.CategoryName = "コスト削減できる社外CTO"
+	view.CategoryName = "炎上案件上等の社外CTO"
 	view.CategoryDescription = "破産寸前の会社を過去最高利益の黒字まで押し上げた実績のあるCTOのブログ　システムの問い合わせの受付やシステム設計の思想・ベストプラクティス　完全に無料で使えるツールの紹介もしています"
 	view.CategoryTxt = template.HTML("破産寸前の会社を過去最高利益の黒字まで押し上げた実績のあるCTOのブログ<br>システムの問い合わせの受付やシステム設計の思想・ベストプラクティス<br>完全に無料で使えるツールの紹介もしています")
 
