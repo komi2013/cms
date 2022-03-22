@@ -2,7 +2,7 @@ package app
 
 import (
 	"database/sql"
-	"fmt"
+	// "fmt"
 	"html/template"
 	"log"
 	"net/http"

@@ -61,13 +61,13 @@ func Note(w http.ResponseWriter, r *http.Request) {
 	stmt, err := db.Prepare(`SELECT note_id, note_title, note_txt, updated_at, category_id, note_img 
 			FROM t_note WHERE note_id = $1`)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
 	}
 	defer stmt.Close()
 	note := Note{}
 	err = stmt.QueryRow(u[2]).Scan(&note.NoteID, &note.NoteTitle, &note.NoteTxt, &note.UpdatedAt, &note.CategoryID, &note.NoteImg)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
 	}
 	// fmt.Printf("note %#v\n", note)
 	view.Note = note
