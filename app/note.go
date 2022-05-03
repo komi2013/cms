@@ -2,7 +2,7 @@ package app
 
 import (
 	"database/sql"
-	// "fmt"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -51,6 +51,7 @@ func Note(w http.ResponseWriter, r *http.Request) {
 		CategoryDescription string
 		CategoryTxt         template.HTML
 		Note                Note
+		URL                 string
 	}
 	var view View
 	view.CacheV = common.CacheV
@@ -197,6 +198,9 @@ func Note(w http.ResponseWriter, r *http.Request) {
 		categoryList = append(categoryList, y)
 	}
 	view.CategoryList = categoryList
+	view.URL = r.Host + r.URL.Path
+	fmt.Println(r.Host)
+	log.Print("mukashi")
 	tpl := template.Must(template.ParseFiles("tpl/note.html"))
 	tpl.Execute(w, view)
 
