@@ -35,6 +35,7 @@ func Note(w http.ResponseWriter, r *http.Request) {
 		NoteTxt       template.HTML
 		CategoryID    string
 		NoteImg       string
+		WroteDate     string
 	}
 	type CategoryList struct {
 		Level            string
@@ -67,6 +68,7 @@ func Note(w http.ResponseWriter, r *http.Request) {
 	defer stmt.Close()
 	note := Note{}
 	err = stmt.QueryRow(u[2]).Scan(&note.NoteID, &note.NoteTitle, &note.NoteTxt, &note.UpdatedAt, &note.CategoryID, &note.NoteImg)
+	note.WroteDate = note.UpdatedAt.Format("2006年01月02日")
 	if err != nil {
 		log.Print(err)
 	}
