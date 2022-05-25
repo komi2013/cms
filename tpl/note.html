@@ -12,6 +12,7 @@
   <tr><td id="menu_td"><img src="/img/menu.png" class="icon"></td></tr>
 </table>
 <input type="checkbox" id="pulling" class="pc_disp_none">
+<nav>
 <table id="drawer">
   <tr><td id="ad_menu"><iframe src="/advertisement/ad_300_250/" width="300" height="250" frameborder="0" scrolling="no"></iframe></td></tr>
   <tr><td><a href="/"><img src="/img/home.png" class="icon"></a></td></tr>
@@ -21,7 +22,7 @@
 </td></tr>
 {{end}}
 </table>
-
+</nav>
 <style>
 li{
   padding: 20px 0px 20px 0px;
@@ -36,14 +37,15 @@ li{
 
 
 <h1>{{.Note.NoteTitle}}</h1>
-
+<nav>
 <div>
 {{ range $v := .BreadCrumb }}
 &nbsp;<a style="margin: 5px 0px 5px 0px;" href="/category/{{$v.Level}}/{{$v.CategoryID}}/"> {{$v.CategoryName}} </a> > &nbsp;
 {{end}}
 </div>
+</nav>
 
-<div>{{.Note.NoteTxt}}</div>
+<article> <div>{{.Note.NoteTxt}}</div> </article>
 <div>{{.Note.WroteDate}}</div>
 
 <p>
