@@ -114,6 +114,7 @@ func Category(w http.ResponseWriter, r *http.Request) {
 			leaf = true
 		}
 	}
+
 	delete(treeList, 0)
 	whereIn := u[3]
 	forBreadCrumb := map[int]map[string]string{}
@@ -175,9 +176,11 @@ func Category(w http.ResponseWriter, r *http.Request) {
 	for i := range treeList {
 		whereIn2 = whereIn2 + "," + strconv.Itoa(i)
 	}
+
+	// fmt.Printf("leaf %#v\n", leaf)
 	if leaf {
-		rows, err = db.Query(`SELECT category_id, category_name, category_description FROM m_category_name WHERE category_id = ` +
-			u[3] + ` OR category_id in ( SELECT level_1 FROM m_category_tree GROUP BY level_1 )`)
+		rows, err = db.Query(`SELECT category_id, category_name, category_description FROM m_category_name WHERE category_id in (` + whereIn + `,` + whereIn2 + `)` +
+		  ` OR category_id in ( SELECT level_1 FROM m_category_tree GROUP BY level_1 )`)
 	} else {
 		rows, err = db.Query("SELECT category_id, category_name, category_description FROM m_category_name WHERE category_id in (" + whereIn + "," + whereIn2 + ")")
 	}
@@ -215,7 +218,6 @@ func Category(w http.ResponseWriter, r *http.Request) {
 			categoryList = append(categoryList, y)
 		}
 	}
-
 	var breadCrumb []BreadCrumb
 	for i, v := range forBreadCrumb {
 		y := BreadCrumb{}
@@ -238,7 +240,7 @@ func Category(w http.ResponseWriter, r *http.Request) {
 			categoryList = append(categoryList, y)
 		}
 	}
-// fmt.Printf("categoryList %#v\n", categoryList)
+
 	if leaf {
 		rows, err = db.Query(`SELECT note_id, note_title, note_txt, updated_at 
 			FROM t_note WHERE category_id = ` + u[3] + `ORDER BY note_id DESC`)

@@ -45,7 +45,7 @@
 {{ range $v := .Note }}
 <div style="word-break: break-all;">
   <p><a href="/note/{{ $v.NoteID }}/"> {{ $v.NoteTitle }} </a></p>
-  {{ $v.NoteTxt }}...  <i>{{ $v.UpdatedAt }}</i>
+  {{ $v.NoteTxt }}...  <time>{{ $v.UpdatedAt }}</time>
 </div>
 {{end}}
 
