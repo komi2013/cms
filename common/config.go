@@ -4,7 +4,7 @@ package common
 const GoPort = ":8107"
 
 // CacheV is for broswer cache
-const CacheV = "?dev20220922"
+const CacheV = "?dev20220923"
 
 // SsKey ss session
 const SsKey = "11111111111111111111111111111111"
