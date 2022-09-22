@@ -11,6 +11,9 @@ table {
   vertical-align: middle;
   cursor: pointer;
 }
+.emoji {
+  font-size: 34px;
+}
 #content {
   padding: 2px;
   word-break: break-all;
@@ -88,7 +91,7 @@ table {
   #pulling {
     position: absolute;
     top: 0px;
-    height: 46px;
+    height: 100px;
     width: 46px;
     opacity: 0;
   }

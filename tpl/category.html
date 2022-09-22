@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>{{.CategoryName}}</title>
+    <meta charset="utf-8">
     <meta name="description" content="{{.CategoryDescription}}">
     <meta property="og:image" content="https://" />
     <link rel="stylesheet" href="/common.css{{.CacheV}}" />
@@ -12,15 +13,24 @@
 <body>
 <table id="header">
   <tr>
-    <td id="menu_td"><img src="/img/menu.png" class="icon"></td>
+    <td id="menu_td" class="emoji"> ≡ </td>
     <td style="width: 80%;"><h2>{{.CategoryName}}</h2></td>
   </tr>
 </table>
 
 <input type="checkbox" id="pulling" class="pc_disp_none">
 <table id="drawer">
-  <tr><td id="ad_menu"><iframe src="/advertisement/ad_300_250/" width="300" height="250" frameborder="0" scrolling="no"></iframe></td></tr>
-  <tr><td><a href="/"><img src="/img/home.png" class="icon"></a></td></tr>
+  <tr><td>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <ins class="adsbygoogle"
+       style="display:inline-block;width:300px;height:250px"
+       data-ad-client="ca-pub-1763935619573577"
+       data-ad-slot="3701545641"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+  </td></tr>
+  <tr><td><a href="/"> <span class="emoji">🏠</span> ホーム</a></td></tr>
 {{ range $v := .CategoryList }}
 <tr><td class="categoryName">
   <a href="/category/{{$v.Level}}/{{$v.CategoryID}}/"> {{$v.CategoryName}} </a>
@@ -30,7 +40,16 @@
 
 <div id="content">
 
-<div class="pc_disp_none" style="text-align: center;"><iframe src="/advertisement/ad_320_50/" width="320" height="50" frameborder="0" scrolling="no"></iframe></div>
+<div class="pc_disp_none" style="text-align: center;">
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:320px;height:50px"
+         data-ad-client="ca-pub-1763935619573577"
+         data-ad-slot="5966804842"></ins>
+  <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
 
 <div>
 {{ range $v := .BreadCrumb }}
@@ -51,9 +70,17 @@
 
 </div  beginis content>
 <br>
-<div id="ad_right"><iframe src="/advertisement/ad_160_600/" width="160" height="600" frameborder="0" scrolling="no"></iframe></div>
 
-
+<div id="ad_right">
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:160px;height:600px"
+         data-ad-client="ca-pub-1763935619573577"
+         data-ad-slot="6074759240"></ins>
+  <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
 
 </body>
 </html>
